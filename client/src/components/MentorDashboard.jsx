@@ -19,13 +19,13 @@ const MentorDashboard = () => {
         }
 
         // Fetch profile
-        const profileRes = await axios.get(`http://localhost:5000/api/mentor-profile?userId=${userId}`, {
+        const profileRes = await axios.get(`https://findmymentor.onrender.com/api/mentor-profile?userId=${userId}`, {
           headers: { Authorization: `Bearer ${token}` }
         });
         setProfile(profileRes.data);
 
         // Fetch bookings for this mentor
-        const bookingsRes = await axios.get(`http://localhost:5000/api/bookings/${userId}`, {
+        const bookingsRes = await axios.get(`https://findmymentor.onrender.com/api/bookings/${userId}`, {
           headers: { Authorization: `Bearer ${token}` }
         });
         setBookings(bookingsRes.data);
@@ -47,7 +47,7 @@ const MentorDashboard = () => {
 
       // PUT request to update booking status
       await axios.put(
-        `http://localhost:5000/api/bookings/${bookingId}`,
+        `https://findmymentor.onrender.com/api/bookings/${bookingId}`,
         { status: statusToUpdate },
         {
           headers: { Authorization: `Bearer ${token}` },

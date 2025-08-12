@@ -10,59 +10,53 @@ const MyMentors = () => {
 
   const studentId = localStorage.getItem('userId');
 
-useEffect(() => {
-  async function fetchMyMentors() {
-    if (!studentId) {
-      console.warn('No studentId available yet, skipping fetch');
-      return;
-    }
+  useEffect(() => {
+    async function fetchMyMentors() {
+      if (!studentId) {
+        console.warn('No studentId available yet, skipping fetch');
+        return;
+      }
 
+      try {
+        const res = await axios.get(`https://findmymentor.onrender.com/api/my-mentors/${studentId}`);
+        setMyMentors(res.data);
+      } catch (err) {
+        console.error('Error fetching mentors:', err);
+        setError('Failed to load your mentors');
+      } finally {
+        setLoading(false);
+      }
+    }
+    console.log('Student ID:', studentId);
+    console.log('Mentor ID:', selectedMentor?._id);
+    fetchMyMentors();
+  }, [studentId]);
+
+  const handleCancelOrDisconnect = async (bookingId, status) => {
     try {
-      const res = await axios.get(`http://localhost:5000/api/my-mentors/${studentId}`);
-      setMyMentors(res.data);
+      const endpoint =
+        status === 'pending'
+          ? `https://findmymentor.onrender.com/api/bookings/${bookingId}/cancel`
+          : `https://findmymentor.onrender.com/api/bookings/${bookingId}/disconnect`;
+
+      await axios.delete(endpoint);
+      setMyMentors(prev => prev.filter(m => m._id !== bookingId));
     } catch (err) {
-      console.error('Error fetching mentors:', err);
-      setError('Failed to load your mentors');
-    } finally {
-      setLoading(false);
+      console.error('Error canceling/disconnecting:', err?.response?.data || err.message);
+      alert('Could not complete the action. Try again.');
     }
-  }
- console.log('Student ID:', studentId);
-             console.log('Mentor ID:', selectedMentor?._id);
-  fetchMyMentors();
-}, [studentId]);
-const handleCancelOrDisconnect = async (bookingId, status) => {
-  try {
-    const endpoint =
-      status === 'pending'
-        ? `http://localhost:5000/api/bookings/${bookingId}/cancel`
-        : `http://localhost:5000/api/bookings/${bookingId}/disconnect`;
-
-    await axios.delete(endpoint);
-    setMyMentors(prev => prev.filter(m => m._id !== bookingId));
-  } catch (err) {
-    console.error('Error canceling/disconnecting:', err?.response?.data || err.message);
-    alert('Could not complete the action. Try again.');
-  }
-};
-
-
+  };
 
   if (loading) return <div>Loading your mentors...</div>;
   if (error) return <div className="text-red-500">{error}</div>;
 
   return (
-             
-
     <div className="max-w-4xl mx-auto p-6">
       <h1 className="text-3xl font-bold mb-6">My Mentors</h1>
 
       {selectedMentor && (
         <div className="mb-6 border p-4 rounded shadow">
           <ChatBox userId={studentId} partnerId={selectedMentor._id} partnerName={selectedMentor.name} />
-
-
-
           <button
             onClick={() => setSelectedMentor(null)}
             className="mt-2 text-blue-600 underline"
@@ -88,7 +82,7 @@ const handleCancelOrDisconnect = async (bookingId, status) => {
               <div className="mt-4 space-x-2">
                 {booking.status === 'pending' && (
                   <button
-                    onClick={() => handleCancelOrDisconnect(booking._id)}
+                    onClick={() => handleCancelOrDisconnect(booking._id, 'pending')}
                     className="bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600"
                   >
                     Cancel Request
@@ -104,7 +98,7 @@ const handleCancelOrDisconnect = async (bookingId, status) => {
                       Message
                     </button>
                     <button
-                      onClick={() => handleCancelOrDisconnect(booking._id)}
+                      onClick={() => handleCancelOrDisconnect(booking._id, 'accepted')}
                       className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700"
                     >
                       Disconnect
@@ -121,4 +115,3 @@ const handleCancelOrDisconnect = async (bookingId, status) => {
 };
 
 export default MyMentors;
-

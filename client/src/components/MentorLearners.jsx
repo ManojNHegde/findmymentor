@@ -13,7 +13,7 @@ const MentorLearners = () => {
   useEffect(() => {
     const fetchLearners = async () => {
       try {
-        const res = await axios.get(`http://localhost:5000/api/learners/${mentorId}`, {
+        const res = await axios.get(`https://findmymentor.onrender.com/api/learners/${mentorId}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         setLearners(res.data);
@@ -32,25 +32,27 @@ const MentorLearners = () => {
     }
   }, [mentorId, token]);
 
- const handleDisconnect = async (bookingId, status) => {
-  try {
-    const endpoint =
-      status === 'pending'
-        ? `http://localhost:5000/api/bookings/${bookingId}/cancel`
-        : `http://localhost:5000/api/bookings/${bookingId}/disconnect`;
+  const handleDisconnect = async (bookingId, status) => {
+    try {
+      const endpoint =
+        status === 'pending'
+          ? `https://findmymentor.onrender.com/api/bookings/${bookingId}/cancel`
+          : `https://findmymentor.onrender.com/api/bookings/${bookingId}/disconnect`;
 
-    await axios.delete(endpoint);
-    
-    setLearners(prev => prev.filter(b => b._id !== bookingId));
+      await axios.delete(endpoint, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      
+      setLearners(prev => prev.filter(b => b._id !== bookingId));
 
-    if (selectedChatUser?.bookingId === bookingId) {
-      setSelectedChatUser(null);
+      if (selectedChatUser?.bookingId === bookingId) {
+        setSelectedChatUser(null);
+      }
+    } catch (err) {
+      console.error('Disconnect error:', err?.response?.data || err.message);
+      alert('Failed to disconnect');
     }
-  } catch (err) {
-    console.error('Disconnect error:', err?.response?.data || err.message);
-    alert('Failed to disconnect');
-  }
-};
+  };
 
   if (loading) return <div>Loading learners...</div>;
 
@@ -68,7 +70,7 @@ const MentorLearners = () => {
         {learners.length === 0 ? (
           <p className="text-gray-500">No connected learners yet.</p>
         ) : (
-          learners.map(({ _id: bookingId, studentId }) => (
+          learners.map(({ _id: bookingId, studentId, status }) => (
             <div key={bookingId} className="border p-4 mb-4 rounded shadow">
               <p><strong>Name:</strong> {studentId?.name}</p>
               <p><strong>Email:</strong> {studentId?.email}</p>
@@ -84,7 +86,7 @@ const MentorLearners = () => {
                 </button>
 
                 <button
-                  onClick={() => handleDisconnect(bookingId)}
+                  onClick={() => handleDisconnect(bookingId, status)}
                   className="bg-red-600 text-white px-4 py-2 rounded cursor-pointer hover:bg-red-700 transition"
                   aria-label={`Disconnect from ${studentId?.name}`}
                 >

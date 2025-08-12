@@ -2,6 +2,8 @@ import { useState, useEffect, useRef, useMemo } from 'react';
 import axios from 'axios';
 import { io } from 'socket.io-client';
 
+const BACKEND_URL = 'https://findmymentor.onrender.com';
+
 export default function ChatBox({ userId, partnerId, partnerName }) {
   const [messages, setMessages] = useState([]);
   const [newMsg, setNewMsg] = useState('');
@@ -25,7 +27,7 @@ export default function ChatBox({ userId, partnerId, partnerName }) {
   useEffect(() => {
     if (!conversationId) return;
 
-    socket.current = io('http://localhost:5000');
+    socket.current = io(BACKEND_URL);
     socket.current.emit('join_conversation', conversationId);
     console.log('[Socket] Joined conversation:', conversationId);
 
@@ -52,7 +54,7 @@ export default function ChatBox({ userId, partnerId, partnerName }) {
 
     const fetchMessages = async () => {
       try {
-        const res = await axios.get(`http://localhost:5000/api/messages/${conversationId}`);
+        const res = await axios.get(`${BACKEND_URL}/api/messages/${conversationId}`);
         setMessages(res.data);
       } catch (err) {
         console.error('[Axios] Failed to fetch messages:', err);
@@ -65,8 +67,8 @@ export default function ChatBox({ userId, partnerId, partnerName }) {
   // Send a new message
   const sendMessage = async () => {
     console.log('➡️ userId:', userId);
-console.log('➡️ partnerId:', partnerId);
-console.log('🧠 conversationId (sorted):', conversationId);
+    console.log('➡️ partnerId:', partnerId);
+    console.log('🧠 conversationId (sorted):', conversationId);
 
     const trimmed = newMsg.trim();
     if (!trimmed || sending || !userId || !partnerId || !conversationId) return;
@@ -80,7 +82,7 @@ console.log('🧠 conversationId (sorted):', conversationId);
 
     try {
       setSending(true);
-      const res = await axios.post('http://localhost:5000/api/messages', payload);
+      const res = await axios.post(`${BACKEND_URL}/api/messages`, payload);
       const msg = res.data.data;
 
       socket.current?.emit('send_message', msg);
@@ -145,4 +147,3 @@ console.log('🧠 conversationId (sorted):', conversationId);
     </div>
   );
 }
-

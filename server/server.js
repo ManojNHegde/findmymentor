@@ -22,8 +22,8 @@ const io = require('socket.io')(server, {
   cors: {
     origin: [
     'http://localhost:3000',
-    'https://findmymentor.vercel.app',
-    'findmymentor-geyja5wqb-manojnhegdes-projects.vercel.app'
+    'https://findmymentor-ki8y.vercel.app',
+
   ], // adjust to match your frontend port
     methods: ['GET', 'POST']
   }
@@ -55,7 +55,9 @@ io.on('connection', (socket) => {
 
 // Middleware
 app.use(cors({
-  origin: 'http://localhost:3000',
+  origin: [
+    'http://localhost:3000',
+    'https://findmymentor-ki8y.vercel.app'],
   credentials: true
 }));
 app.use(express.json());

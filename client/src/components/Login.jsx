@@ -15,7 +15,7 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post('http://localhost:5000/api/login', form, {
+      const res = await axios.post('https://findmymentor.onrender.com/api/login', form, {
         withCredentials: true, // Keep if your backend uses sessions/cookies
       });
 
@@ -26,7 +26,7 @@ const Login = () => {
       }
 
       if (user?._id) {
-        localStorage.setItem('userId', user._id); // Store userId for fetching profile later
+        localStorage.setItem('userId', user._id);
       }
       if (user?.role) {
         localStorage.setItem('role', user.role);
@@ -38,7 +38,6 @@ const Login = () => {
       setMessage("Login successful!");
       setMessageType('success');
 
-      // Navigate based on role
       if (user.role === 'mentor') navigate('/mentor-dashboard');
       else if (user.role === 'learner') navigate('/learner-dashboard');
       else navigate('/');

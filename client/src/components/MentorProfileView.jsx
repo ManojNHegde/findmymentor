@@ -13,7 +13,7 @@ const MentorProfileView = () => {
   useEffect(() => {
     const fetchMentor = async () => {
       try {
-        const res = await axios.get(`http://localhost:5000/api/mentors/${id}`);
+        const res = await axios.get(`https://findmymentor.onrender.com/api/mentors/${id}`);
         setMentor(res.data);
       } catch (err) {
         console.error('Error fetching mentor:', err);
@@ -39,7 +39,7 @@ const MentorProfileView = () => {
     }
 
     try {
-      await axios.post('http://localhost:5000/api/book-mentor', {
+      await axios.post('https://findmymentor.onrender.com/api/book-mentor', {
         studentId,
         mentorId: id,
         message: bookingMessage,

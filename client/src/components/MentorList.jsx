@@ -14,7 +14,7 @@ const MentorListing = () => {
   useEffect(() => {
     async function fetchMentors() {
       try {
-        const res = await axios.get('http://localhost:5000/api/mentors');
+        const res = await axios.get('https://findmymentor.onrender.com/api/mentors');
         setMentors(res.data);
       } catch (err) {
         setError('Failed to load mentors');

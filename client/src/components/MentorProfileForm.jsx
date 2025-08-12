@@ -7,48 +7,46 @@ const MentorProfileForm = () => {
   const [availability, setAvailability] = useState('');
 
   const handleSubmit = async (e) => {
-  e.preventDefault();
+    e.preventDefault();
 
-  const parsedSkills = skills
-    .split(',')
-    .map((s) => s.trim())
-    .filter(Boolean); // Remove empty strings
+    const parsedSkills = skills
+      .split(',')
+      .map((s) => s.trim())
+      .filter(Boolean); // Remove empty strings
 
-  if (!parsedSkills.length || !experience || !availability) {
-    alert('Please fill in all fields');
-    return;
-  }
-
-  try {
-    const token = localStorage.getItem('token');
-    if (!token) {
-      alert('You must be logged in to update profile');
+    if (!parsedSkills.length || !experience || !availability) {
+      alert('Please fill in all fields');
       return;
     }
 
-    const response = await axios.put(
-      'http://localhost:5000/api/update-mentor-profile',
-      {
-        skills: parsedSkills,
-        experience,
-        availability,
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        alert('You must be logged in to update profile');
+        return;
       }
-    );
 
-    alert('Profile updated successfully!');
-    console.log('Updated user:', response.data.user);
-  } catch (err) {
-    console.error('Update failed:', err.response?.data || err.message);
-    alert('Profile update failed: ' + (err.response?.data?.message || 'Server error'));
-  }
-};
+      const response = await axios.put(
+        'https://findmymentor.onrender.com/api/update-mentor-profile',
+        {
+          skills: parsedSkills,
+          experience,
+          availability,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
-
+      alert('Profile updated successfully!');
+      console.log('Updated user:', response.data.user);
+    } catch (err) {
+      console.error('Update failed:', err.response?.data || err.message);
+      alert('Profile update failed: ' + (err.response?.data?.message || 'Server error'));
+    }
+  };
 
   return (
     <div className="max-w-md mx-auto mt-10 bg-white shadow-md rounded-lg p-8">
@@ -67,19 +65,18 @@ const MentorProfileForm = () => {
         </div>
 
         <div>
-  <label className="block text-gray-700 font-medium mb-1">Experience</label>
-  <select
-    value={experience}
-    onChange={(e) => setExperience(e.target.value)}
-    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
-  >
-    <option value="">Select experience level</option>
-    <option value="Junior">Junior</option>
-    <option value="Mid">Mid</option>
-    <option value="Senior">Senior</option>
-  </select>
-</div>
-
+          <label className="block text-gray-700 font-medium mb-1">Experience</label>
+          <select
+            value={experience}
+            onChange={(e) => setExperience(e.target.value)}
+            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+          >
+            <option value="">Select experience level</option>
+            <option value="Junior">Junior</option>
+            <option value="Mid">Mid</option>
+            <option value="Senior">Senior</option>
+          </select>
+        </div>
 
         <div>
           <label className="block text-gray-700 font-medium mb-1">Availability</label>
