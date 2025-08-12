@@ -231,7 +231,9 @@ app.get('/api/mentor-profile', async (req, res) => {
     const profile = {
       skills: user.skills || [],
       experience: user.experience || '',
-      availability: user.availability || ''
+      availability: user.availability || '',
+      name: user.name || '',
+      email: user.email || ''
     };
 
     res.json(profile);
@@ -396,7 +398,7 @@ app.get('/api/my-mentors/:studentId', async (req, res) => {
 
   try {
     const bookings = await Booking.find({ studentId, status: 'accepted' })
-      .populate('mentorId', 'name email skills experience')
+      .populate('mentorId', 'name email skills experience availability')
       .exec();
 
     res.json(bookings);

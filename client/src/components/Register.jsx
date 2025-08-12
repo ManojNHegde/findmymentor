@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
-const Register = ({ setUser }) => {
+const Register = () => {
   const [form, setForm] = useState({
     name: '',
     email: '',
@@ -31,24 +31,17 @@ const Register = ({ setUser }) => {
         withCredentials: true,
       });
 
-      const { token, user } = res.data;
+      // We do NOT store token or user info here,
+      // user must login manually after registration
 
-      if (!token) throw new Error('Token not found in response');
-
-      // Store token and user info
-      localStorage.setItem('token', token);
-      localStorage.setItem('role', user.role);
-      localStorage.setItem('name', user.name);
-
-      if (setUser) {
-        setUser(user);
-      }
-
-      setMessage('Registration successful!');
+      setMessage('Registration successful! Please login to continue.');
       setMessageType('success');
 
-      // Redirect to dashboard
-      navigate(user.role === 'mentor' ? '/mentor-dashboard' : '/learner-dashboard');
+      // Redirect to login after a short delay (optional)
+      setTimeout(() => {
+        navigate('/login');
+      }, 1500);
+      
     } catch (err) {
       const errorMsg =
         err.response?.data?.error ||
