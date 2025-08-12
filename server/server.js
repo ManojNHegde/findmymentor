@@ -20,7 +20,11 @@ const JWT_SECRET = process.env.JWT_SECRET || 'your_jwt_secret'; // Store securel
 const server = http.createServer(app);
 const io = require('socket.io')(server, {
   cors: {
-    origin: 'http://localhost:3000', // adjust to match your frontend port
+    origin: [
+    'http://localhost:3000',
+    'https://findmymentor.vercel.app',
+    'findmymentor-geyja5wqb-manojnhegdes-projects.vercel.app'
+  ], // adjust to match your frontend port
     methods: ['GET', 'POST']
   }
 });
