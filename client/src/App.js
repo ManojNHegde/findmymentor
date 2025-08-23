@@ -29,10 +29,6 @@ function MentorLearners() {
   );
 }
 
-
-
-
-
 function App() {
   return (
     <Router>
